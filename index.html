@@ -12,6 +12,7 @@
     header{display:grid;grid-template-columns:minmax(380px,.85fr) 2fr auto;align-items:center;gap:18px}
     h1{margin:0;color:var(--blue);font-size:clamp(34px,3vw,58px);letter-spacing:-.045em;line-height:1}
     .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .mobile-process{display:none}
     .tab{border:2px solid transparent;border-radius:13px;padding:14px 12px;background:var(--pale);color:var(--ink);font-size:clamp(17px,1.3vw,26px);font-weight:800;transition:.18s transform,.18s background,.18s color}
     .tab:hover{transform:translateY(-2px)} .tab[aria-selected="true"]{color:#fff;background:var(--tab);box-shadow:0 10px 22px color-mix(in srgb,var(--tab) 24%,transparent)}
     .header-actions{display:flex;gap:8px}.share,.reset{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 14px;font-weight:700;color:var(--blue);white-space:nowrap}.share{border-color:var(--blue);background:var(--blue);color:#fff}
@@ -34,7 +35,7 @@
     dialog{width:min(92vw,520px);border:0;border-radius:18px;padding:0;box-shadow:0 28px 80px #102b3d55;color:var(--ink)}dialog::backdrop{background:#0b2639b8;backdrop-filter:blur(3px)}.share-dialog{padding:24px;text-align:center}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.dialog-head h2{margin:0;color:var(--blue);font-size:28px}.close{width:42px;height:42px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--blue);font-size:26px;line-height:1}.qr{display:block;width:min(70vw,300px);height:auto;margin:20px auto 14px}.share-url{display:block;padding:11px;border-radius:9px;background:var(--pale);color:var(--blue);font-weight:700;overflow-wrap:anywhere}.share-dialog p{margin:14px 0 0;color:var(--muted);line-height:1.45}
     @media(max-height:820px){.app{padding:14px 20px 10px;gap:10px}.tab{padding:9px}.control{padding:10px 18px;gap:4px}.example{padding-top:10px}.model-stage{min-height:150px}.metric{padding:4px 8px}footer{grid-template-columns:180px repeat(3,1fr)}.cost-ref{padding:7px 10px}}
     @media(max-width:900px){.app{display:block;padding:14px}.app>*+*{margin-top:14px}header{grid-template-columns:1fr;gap:12px}h1{font-size:34px}.header-actions{grid-column:1;grid-row:2}.share{width:100%}.reset{display:none}.tabs{grid-column:1;grid-row:3;min-width:0}.tab{min-width:0;padding:10px 5px;font-size:14px;line-height:1.1;white-space:normal}main{display:block;overflow:visible}.controls{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(2,1fr);grid-template-rows:auto}.control{padding:12px;border-right:1px solid var(--line)}.control:nth-child(2){border-right:0}.control:nth-child(3){border-bottom:0}.control label{font-size:16px}.value{font-size:17px}.examples{display:block}.example{border-right:0;border-bottom:1px solid var(--line);grid-template-rows:auto 190px auto;padding:16px}.example:last-child{border-bottom:0}.example h2{font-size:25px}.model-stage{min-height:180px}.model-stage svg{width:100%;height:100%}footer{grid-template-columns:1fr}.cost-title{padding:6px 0}.note{text-align:left;margin:0}.cost-ref:not(.active){display:none}}
-    @media(max-width:600px){h1{font-size:30px}.tabs{grid-template-columns:1fr}.controls{grid-template-columns:1fr}.control{border-right:0}.control:nth-child(3){border-bottom:1px solid var(--line)}}
+    @media(max-width:600px){.app{padding:12px}header{gap:10px}h1{font-size:30px}.tabs,.header-actions{display:none}.mobile-process{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;color:var(--blue);font-weight:800}.mobile-process select{width:100%;min-height:48px;border:2px solid var(--blue);border-radius:11px;padding:0 12px;background:#fff;color:var(--blue);font:800 17px Arial,"Helvetica Neue",sans-serif}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.control{min-width:0;padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.control:nth-child(2n){border-right:0}.control:nth-child(n+3){border-bottom:0}.control-head{display:block}.control label,.value{display:block}.value{margin-top:3px}.scale{font-size:11px}.example{padding:14px;grid-template-rows:auto 175px auto}.example h2{font-size:23px}.metric{min-height:42px;align-items:center}.cost-ref{padding:10px}.note{line-height:1.4}}
     @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -42,6 +43,7 @@
 <div class="app">
   <header>
     <h1>3D-Druck-Simulator</h1>
+    <label class="mobile-process" for="mobileProcess"><span>Verfahren</span><select id="mobileProcess"><option value="fff">FFF / FDM</option><option value="sla">SLA / Harz</option><option value="sls">SLS / Pulverbett</option></select></label>
     <div class="tabs" role="tablist" aria-label="Druckverfahren">
       <button class="tab" role="tab" data-process="fff" style="--tab:#004983" aria-selected="true">FFF / FDM</button>
       <button class="tab" role="tab" data-process="sla" style="--tab:#f49b00" aria-selected="false">SLA / Harz</button>
@@ -194,11 +196,13 @@
   function chooseProcess(name){
     state.process=name;const l=processes[name].layer;
     Object.assign(controls.layer,{min:l.min,max:l.max,step:l.step,value:l.value});
+    $('mobileProcess').value=name;
     document.querySelectorAll('.tab').forEach(tab=>tab.setAttribute('aria-selected',tab.dataset.process===name));
     document.querySelectorAll('.cost-ref').forEach(ref=>ref.classList.toggle('active',ref.dataset.cost===name));
     render();
   }
   document.querySelectorAll('.tab').forEach(tab=>tab.addEventListener('click',()=>chooseProcess(tab.dataset.process)));
+  $('mobileProcess').addEventListener('change',event=>chooseProcess(event.target.value));
   Object.values(controls).forEach(control=>control.addEventListener('input',render));
   $('reset').addEventListener('click',()=>{controls.size.value=100;controls.density.value=30;controls.quantity.value=1;chooseProcess('fff')});
   $('share').addEventListener('click',()=>$('shareDialog').showModal());
