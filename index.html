@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>3D-Druck-Simulator</title>
+  <title>3D Printing Simulator</title>
   <style>
     :root{--blue:#004983;--orange:#f49b00;--teal:#004b51;--ink:#20262b;--muted:#63717c;--line:#cad8e3;--pale:#edf4f8;--active:var(--blue);font-family:Arial,"Helvetica Neue",sans-serif;color:var(--ink);background:#fff}
     *{box-sizing:border-box} body{margin:0;min-height:100vh;background:linear-gradient(180deg,#fff 0,#f7fafc 100%)}
@@ -15,7 +15,7 @@
     .mobile-process{display:none}
     .tab{border:2px solid transparent;border-radius:13px;padding:14px 12px;background:var(--pale);color:var(--ink);font-size:clamp(17px,1.3vw,26px);font-weight:800;transition:.18s transform,.18s background,.18s color}
     .tab:hover{transform:translateY(-2px)} .tab[aria-selected="true"]{color:#fff;background:var(--tab);box-shadow:0 10px 22px color-mix(in srgb,var(--tab) 24%,transparent)}
-    .header-actions{display:flex;gap:8px}.share,.reset{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 14px;font-weight:700;color:var(--blue);white-space:nowrap}.share{border-color:var(--blue);background:var(--blue);color:#fff}
+    .header-actions{display:flex;gap:8px}.share,.reset,.language{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 14px;font-weight:700;color:var(--blue);white-space:nowrap}.share{border-color:var(--blue);background:var(--blue);color:#fff}.language{min-width:48px}
     main{display:grid;grid-template-columns:minmax(285px,340px) 1fr;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 16px 44px #00498312}
     .controls{border-right:1px solid var(--line);background:#fbfdfe;display:grid;grid-template-rows:repeat(4,1fr);min-height:0}
     .control{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;gap:10px}.control:last-child{border-bottom:0}
@@ -35,53 +35,54 @@
     dialog{width:min(92vw,520px);border:0;border-radius:18px;padding:0;box-shadow:0 28px 80px #102b3d55;color:var(--ink)}dialog::backdrop{background:#0b2639b8;backdrop-filter:blur(3px)}.share-dialog{padding:24px;text-align:center}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px}.dialog-head h2{margin:0;color:var(--blue);font-size:28px}.close{width:42px;height:42px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--blue);font-size:26px;line-height:1}.qr{display:block;width:min(70vw,300px);height:auto;margin:20px auto 14px}.share-url{display:block;padding:11px;border-radius:9px;background:var(--pale);color:var(--blue);font-weight:700;overflow-wrap:anywhere}.share-dialog p{margin:14px 0 0;color:var(--muted);line-height:1.45}
     @media(max-height:820px){.app{padding:14px 20px 10px;gap:10px}.tab{padding:9px}.control{padding:10px 18px;gap:4px}.example{padding-top:10px}.model-stage{min-height:150px}.metric{padding:4px 8px}footer{grid-template-columns:180px repeat(3,1fr)}.cost-ref{padding:7px 10px}}
     @media(max-width:900px){.app{display:block;padding:14px}.app>*+*{margin-top:14px}header{grid-template-columns:1fr;gap:12px}h1{font-size:34px}.header-actions{grid-column:1;grid-row:2}.share{width:100%}.reset{display:none}.tabs{grid-column:1;grid-row:3;min-width:0}.tab{min-width:0;padding:10px 5px;font-size:14px;line-height:1.1;white-space:normal}main{display:block;overflow:visible}.controls{border-right:0;border-bottom:1px solid var(--line);grid-template-columns:repeat(2,1fr);grid-template-rows:auto}.control{padding:12px;border-right:1px solid var(--line)}.control:nth-child(2){border-right:0}.control:nth-child(3){border-bottom:0}.control label{font-size:16px}.value{font-size:17px}.examples{display:block}.example{border-right:0;border-bottom:1px solid var(--line);grid-template-rows:auto 190px auto;padding:16px}.example:last-child{border-bottom:0}.example h2{font-size:25px}.model-stage{min-height:180px}.model-stage svg{width:100%;height:100%}footer{grid-template-columns:1fr}.cost-title{padding:6px 0}.note{text-align:left;margin:0}.cost-ref:not(.active){display:none}}
-    @media(max-width:600px){.app{padding:12px}header{gap:10px}h1{font-size:30px}.tabs,.header-actions{display:none}.mobile-process{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;color:var(--blue);font-weight:800}.mobile-process select{width:100%;min-height:48px;border:2px solid var(--blue);border-radius:11px;padding:0 12px;background:#fff;color:var(--blue);font:800 17px Arial,"Helvetica Neue",sans-serif}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.control{min-width:0;padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.control:nth-child(2n){border-right:0}.control:nth-child(n+3){border-bottom:0}.control-head{display:block}.control label,.value{display:block}.value{margin-top:3px}.scale{font-size:11px}.example{padding:14px;grid-template-rows:auto 175px auto}.example h2{font-size:23px}.metric{min-height:42px;align-items:center}.cost-ref{padding:10px}.note{line-height:1.4}}
-    @media(orientation:landscape) and (max-height:500px) and (max-width:1000px){.app{height:100dvh;min-height:0;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));display:grid;grid-template-rows:auto 1fr;gap:7px}.app>*+*{margin-top:0}header{display:grid;grid-template-columns:220px 1fr;gap:10px}h1{font-size:24px}.mobile-process,.header-actions{display:none}.tabs{display:grid;grid-column:2;grid-row:1;gap:6px}.tab{padding:7px 4px;font-size:13px;line-height:1.05}main{display:grid;grid-template-columns:31% 69%;min-height:0;overflow:hidden}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,1fr);border-right:1px solid var(--line);border-bottom:0}.control{min-width:0;padding:7px 9px;gap:3px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.control:nth-child(2n){border-right:0}.control:nth-child(n+3){border-bottom:0}.control-head{display:block}.control label,.value{display:block;font-size:13px}.value{margin-top:2px;font-size:14px}.scale{font-size:9px}input[type=range]{height:24px}.examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:0}.example{padding:6px 7px 4px;border-right:1px solid var(--line);border-bottom:0;grid-template-rows:auto minmax(78px,1fr) auto}.example h2{font-size:15px;margin:0}.model-stage{min-height:78px}.model-stage svg{width:100%;height:100%}.layer-callout{top:2px;right:1px}.layer-callout strong{font-size:17px}.layer-callout span{font-size:8px}.metric{min-height:0;padding:2px 3px;font-size:10px}.metric:last-child{font-size:12px}.cost-ref:not(.active){display:grid}footer{display:none}}
+    @media(max-width:600px){.app{padding:12px}header{position:relative;gap:10px}h1{font-size:30px;padding-right:56px}.tabs,.share,.reset{display:none}.header-actions{display:flex;position:absolute;grid-column:1;grid-row:1;right:0;top:0}.language{padding:8px 10px}.mobile-process{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;color:var(--blue);font-weight:800}.mobile-process select{width:100%;min-height:48px;border:2px solid var(--blue);border-radius:11px;padding:0 12px;background:#fff;color:var(--blue);font:800 17px Arial,"Helvetica Neue",sans-serif}.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.control{min-width:0;padding:12px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.control:nth-child(2n){border-right:0}.control:nth-child(n+3){border-bottom:0}.control-head{display:block}.control label,.value{display:block}.value{margin-top:3px}.scale{font-size:11px}.example{padding:14px;grid-template-rows:auto 175px auto}.example h2{font-size:23px}.metric{min-height:42px;align-items:center}.cost-ref{padding:10px}.note{line-height:1.4}}
+    @media(orientation:landscape) and (max-height:500px) and (max-width:1000px){.app{height:100dvh;min-height:0;padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));display:grid;grid-template-rows:auto 1fr;gap:7px}.app>*+*{margin-top:0}header{display:grid;grid-template-columns:215px 48px 1fr;gap:8px}h1{font-size:24px}.mobile-process,.share,.reset{display:none}.header-actions{display:flex;grid-column:2;grid-row:1}.language{padding:7px 6px}.tabs{display:grid;grid-column:3;grid-row:1;gap:6px}.tab{padding:7px 4px;font-size:13px;line-height:1.05}main{display:grid;grid-template-columns:31% 69%;min-height:0;overflow:hidden}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,1fr);border-right:1px solid var(--line);border-bottom:0}.control{min-width:0;padding:7px 9px;gap:3px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.control:nth-child(2n){border-right:0}.control:nth-child(n+3){border-bottom:0}.control-head{display:block}.control label,.value{display:block;font-size:13px}.value{margin-top:2px;font-size:14px}.scale{font-size:9px}input[type=range]{height:24px}.examples{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));min-height:0}.example{padding:6px 7px 4px;border-right:1px solid var(--line);border-bottom:0;grid-template-rows:auto minmax(78px,1fr) auto}.example h2{font-size:15px;margin:0}.model-stage{min-height:78px}.model-stage svg{width:100%;height:100%}.layer-callout{top:2px;right:1px}.layer-callout strong{font-size:17px}.layer-callout span{font-size:8px}.metric{min-height:0;padding:2px 3px;font-size:10px}.metric:last-child{font-size:12px}.cost-ref:not(.active){display:grid}footer{display:none}}
     @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
   </style>
 </head>
 <body>
 <div class="app">
   <header>
-    <h1>3D-Druck-Simulator</h1>
-    <label class="mobile-process" for="mobileProcess"><span>Verfahren</span><select id="mobileProcess"><option value="fff">FFF / FDM</option><option value="sla">SLA / Harz</option><option value="sls">SLS / Pulverbett</option></select></label>
-    <div class="tabs" role="tablist" aria-label="Druckverfahren">
+    <h1 data-i18n="title">3D Printing Simulator</h1>
+    <label class="mobile-process" for="mobileProcess"><span data-i18n="process">Process</span><select id="mobileProcess"><option value="fff">FFF / FDM</option><option value="sla" data-i18n="sla">SLA / Resin</option><option value="sls" data-i18n="sls">SLS / Powder bed</option></select></label>
+    <div class="tabs" role="tablist" aria-label="Printing process" data-i18n-aria="printingProcess">
       <button class="tab" role="tab" data-process="fff" style="--tab:#004983" aria-selected="true">FFF / FDM</button>
-      <button class="tab" role="tab" data-process="sla" style="--tab:#f49b00" aria-selected="false">SLA / Harz</button>
-      <button class="tab" role="tab" data-process="sls" style="--tab:#004b51" aria-selected="false">SLS / Pulverbett</button>
+      <button class="tab" role="tab" data-process="sla" style="--tab:#f49b00" aria-selected="false" data-i18n="sla">SLA / Resin</button>
+      <button class="tab" role="tab" data-process="sls" style="--tab:#004b51" aria-selected="false" data-i18n="sls">SLS / Powder bed</button>
     </div>
     <div class="header-actions">
-      <button class="share" id="share">QR-Code fürs Handy</button>
-      <button class="reset" id="reset">Zurücksetzen</button>
+      <button class="share" id="share" data-i18n="share">QR code for phone</button>
+      <button class="reset" id="reset" data-i18n="reset">Reset</button>
+      <button class="language" id="language" aria-label="Switch to German">DE</button>
     </div>
   </header>
 
   <main>
-    <section class="controls" aria-label="Simulationsparameter">
+    <section class="controls" aria-label="Simulation parameters" data-i18n-aria="parameters">
       <div class="control">
-        <div class="control-head"><label for="layer">Schichthöhe</label><output class="value" id="layerValue"></output></div>
-        <input id="layer" type="range"><div class="scale"><span>fein</span><span>schnell</span></div>
+        <div class="control-head"><label for="layer" data-i18n="layerHeight">Layer height</label><output class="value" id="layerValue"></output></div>
+        <input id="layer" type="range"><div class="scale"><span data-i18n="fine">fine</span><span data-i18n="fast">fast</span></div>
       </div>
       <div class="control">
-        <div class="control-head"><label for="size">Modellgröße</label><output class="value" id="sizeValue"></output></div>
+        <div class="control-head"><label for="size" data-i18n="modelSize">Model size</label><output class="value" id="sizeValue"></output></div>
         <input id="size" type="range" min="50" max="150" step="5" value="100"><div class="scale"><span>50 %</span><span>100 %</span><span>150 %</span></div>
       </div>
       <div class="control">
-        <div class="control-head"><label for="density">Füllung / Dichte</label><output class="value" id="densityValue"></output></div>
-        <input id="density" type="range" min="10" max="100" step="5" value="30"><div class="scale"><span>leicht</span><span>massiv</span></div>
+        <div class="control-head"><label for="density" data-i18n="density">Infill / density</label><output class="value" id="densityValue"></output></div>
+        <input id="density" type="range" min="10" max="100" step="5" value="30"><div class="scale"><span data-i18n="light">light</span><span data-i18n="solid">solid</span></div>
       </div>
       <div class="control">
-        <div class="control-head"><label for="quantity">Stückzahl</label><output class="value" id="quantityValue"></output></div>
+        <div class="control-head"><label for="quantity" data-i18n="quantity">Quantity</label><output class="value" id="quantityValue"></output></div>
         <input id="quantity" type="range" min="1" max="10" step="1" value="1"><div class="scale"><span>1</span><span>5</span><span>10</span></div>
       </div>
     </section>
 
     <section class="examples" id="examples" aria-live="polite">
       <article class="example" data-model="tag">
-        <h2>Schlüsselanhänger</h2>
+        <h2 data-i18n="keychain">Keychain</h2>
         <div class="model-stage">
-          <div class="layer-callout"><strong data-out="layers"></strong><span>Schichten</span></div>
-          <svg viewBox="0 0 300 220" role="img" aria-label="Schlüsselanhänger mit sichtbaren Schichten">
+          <div class="layer-callout"><strong data-out="layers"></strong><span data-i18n="layers">layers</span></div>
+          <svg viewBox="0 0 300 220" role="img" aria-label="Keychain with visible layers" data-i18n-aria="keychainAria">
             <defs><pattern id="tagLayers" data-layer-pattern width="10" height="7" patternUnits="userSpaceOnUse"><rect width="10" height="7" fill="color-mix(in srgb,var(--active) 72%,white)"/><path d="M0 1H10" stroke="white" stroke-opacity=".72"/></pattern></defs>
             <g class="build-shape" transform="translate(-10 -10) scale(1.15) skewY(-7)"><rect x="42" y="78" width="215" height="88" rx="34" fill="color-mix(in srgb,var(--active) 45%,black)" transform="translate(8 12)"/><rect x="38" y="72" width="215" height="88" rx="34" fill="url(#tagLayers)" stroke="var(--active)" stroke-width="4"/><circle cx="78" cy="116" r="17" fill="#fff" stroke="var(--active)" stroke-width="4"/><text x="154" y="130" text-anchor="middle" font-size="49" font-weight="900" fill="#fff">3D</text></g>
           </svg>
@@ -90,10 +91,10 @@
       </article>
 
       <article class="example" data-model="bracket">
-        <h2>Halterung</h2>
+        <h2 data-i18n="bracket">Bracket</h2>
         <div class="model-stage">
-          <div class="layer-callout"><strong data-out="layers"></strong><span>Schichten</span></div>
-          <svg viewBox="0 0 300 220" role="img" aria-label="Mechanische Halterung mit sichtbaren Schichten">
+          <div class="layer-callout"><strong data-out="layers"></strong><span data-i18n="layers">layers</span></div>
+          <svg viewBox="0 0 300 220" role="img" aria-label="Mechanical bracket with visible layers" data-i18n-aria="bracketAria">
             <defs><pattern id="bracketLayers" data-layer-pattern width="10" height="7" patternUnits="userSpaceOnUse"><rect width="10" height="7" fill="color-mix(in srgb,var(--active) 72%,white)"/><path d="M0 1H10" stroke="white" stroke-opacity=".72"/></pattern></defs>
             <g class="build-shape" transform="translate(-12 -10) scale(1.15) skewY(-5)"><path d="M45 160h224v45H45zM85 160V65h48v95zm96 0V65h48v95z" fill="color-mix(in srgb,var(--active) 45%,black)"/><path d="M38 153h224v45H38zM78 153V58h48v95zm96 0V58h48v95z" fill="url(#bracketLayers)" stroke="var(--active)" stroke-width="4" stroke-linejoin="round"/><circle cx="102" cy="86" r="12" fill="#fff" stroke="var(--active)" stroke-width="4"/><circle cx="198" cy="86" r="12" fill="#fff" stroke="var(--active)" stroke-width="4"/><circle cx="70" cy="174" r="8" fill="#fff"/><circle cx="230" cy="174" r="8" fill="#fff"/></g>
           </svg>
@@ -102,10 +103,10 @@
       </article>
 
       <article class="example" data-model="housing">
-        <h2>Gittergehäuse</h2>
+        <h2 data-i18n="housing">Lattice housing</h2>
         <div class="model-stage">
-          <div class="layer-callout"><strong data-out="layers"></strong><span>Schichten</span></div>
-          <svg viewBox="0 0 300 220" role="img" aria-label="Gittergehäuse mit sichtbaren Schichten">
+          <div class="layer-callout"><strong data-out="layers"></strong><span data-i18n="layers">layers</span></div>
+          <svg viewBox="0 0 300 220" role="img" aria-label="Lattice housing with visible layers" data-i18n-aria="housingAria">
             <defs>
               <pattern id="housingLayers" data-layer-pattern width="12" height="7" patternUnits="userSpaceOnUse"><rect width="12" height="7" fill="color-mix(in srgb,var(--active) 66%,white)"/><path d="M0 1H12" stroke="white" stroke-opacity=".6"/></pattern>
               <pattern id="grid" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M0 0L22 22M22 0L0 22" stroke="#fff" stroke-width="3" stroke-opacity=".78"/></pattern>
@@ -119,20 +120,20 @@
   </main>
 
   <footer>
-    <div class="cost-title"><div>Kostenstruktur<small>didaktische Referenzwerte</small></div></div>
-    <div class="cost-ref active" data-cost="fff" style="--proc:#004983"><b>FFF / FDM</b><strong>ca. 1.400 €</strong><span>Material · Maschinenstunde</span><strong>24 €/kg · 0,95 €/h</strong></div>
-    <div class="cost-ref" data-cost="sla" style="--proc:#f49b00"><b>SLA / Harz</b><strong>ca. 4.500 €</strong><span>Material · Maschinenstunde</span><strong>110 €/l · 3,35 €/h</strong></div>
-    <div class="cost-ref" data-cost="sls" style="--proc:#004b51"><b>SLS / Pulverbett</b><strong>ca. 35.000 €</strong><span>Material · Maschinenstunde</span><strong>70 €/kg · 13,50 €/h</strong></div>
-    <div class="note">Vereinfachte Lernsimulation – reale Zeiten und Kosten hängen von Maschine, Material, Orientierung, Support und Slicerprofil ab.</div>
+    <div class="cost-title"><div><span data-i18n="costStructure">Cost structure</span><small data-i18n="referenceValues">educational reference values</small></div></div>
+    <div class="cost-ref active" data-cost="fff" style="--proc:#004983"><b>FFF / FDM</b><strong data-i18n="fffPrinter">approx. €1,400</strong><span data-i18n="materialMachine">Material · machine hour</span><strong data-i18n="fffRates">€24/kg · €0.95/h</strong></div>
+    <div class="cost-ref" data-cost="sla" style="--proc:#f49b00"><b data-i18n="sla">SLA / Resin</b><strong data-i18n="slaPrinter">approx. €4,500</strong><span data-i18n="materialMachine">Material · machine hour</span><strong data-i18n="slaRates">€110/l · €3.35/h</strong></div>
+    <div class="cost-ref" data-cost="sls" style="--proc:#004b51"><b data-i18n="sls">SLS / Powder bed</b><strong data-i18n="slsPrinter">approx. €35,000</strong><span data-i18n="materialMachine">Material · machine hour</span><strong data-i18n="slsRates">€70/kg · €13.50/h</strong></div>
+    <div class="note" data-i18n="note">Simplified learning simulation – real times and costs depend on the machine, material, orientation, supports and slicer profile.</div>
   </footer>
 </div>
 
 <dialog id="shareDialog" aria-labelledby="shareTitle">
   <div class="share-dialog">
-    <div class="dialog-head"><h2 id="shareTitle">Auf dem Handy öffnen</h2><button class="close" id="closeShare" aria-label="Fenster schließen">&times;</button></div>
-    <img class="qr" src="qr-code.png" alt="QR-Code zum 3D-Druck-Simulator">
+    <div class="dialog-head"><h2 id="shareTitle" data-i18n="openOnPhone">Open on your phone</h2><button class="close" id="closeShare" aria-label="Close dialog" data-i18n-aria="close">&times;</button></div>
+    <img class="qr" src="qr-code.png" alt="QR code for the 3D printing simulator" data-i18n-alt="qrAlt">
     <span class="share-url">goodguy1963.github.io/3d-druck-simulator</span>
-    <p>QR-Code scannen und direkt mitspielen. Es genügt eine mobile Datenverbindung – kein gemeinsames WLAN nötig.</p>
+    <p data-i18n="qrHelp">Scan the QR code and start experimenting. Mobile data is enough – no shared Wi-Fi is required.</p>
   </div>
 </dialog>
 
@@ -147,7 +148,11 @@
     bracket:{height:42,volume:42,complexity:1.15},
     housing:{height:75,volume:125,complexity:1.55}
   };
-  const state={process:'fff'};
+  const translations={
+    en:{title:'3D Printing Simulator',process:'Process',sla:'SLA / Resin',sls:'SLS / Powder bed',printingProcess:'Printing process',share:'QR code for phone',reset:'Reset',parameters:'Simulation parameters',layerHeight:'Layer height',fine:'fine',fast:'fast',modelSize:'Model size',density:'Infill / density',light:'light',solid:'solid',quantity:'Quantity',keychain:'Keychain',layers:'layers',keychainAria:'Keychain with visible layers',bracket:'Bracket',bracketAria:'Mechanical bracket with visible layers',housing:'Lattice housing',housingAria:'Lattice housing with visible layers',costStructure:'Cost structure',referenceValues:'educational reference values',fffPrinter:'approx. €1,400',materialMachine:'Material · machine hour',fffRates:'€24/kg · €0.95/h',slaPrinter:'approx. €4,500',slaRates:'€110/l · €3.35/h',slsPrinter:'approx. €35,000',slsRates:'€70/kg · €13.50/h',note:'Simplified learning simulation – real times and costs depend on the machine, material, orientation, supports and slicer profile.',openOnPhone:'Open on your phone',close:'Close dialog',qrAlt:'QR code for the 3D printing simulator',qrHelp:'Scan the QR code and start experimenting. Mobile data is enough – no shared Wi-Fi is required.',printTime:'Print time',material:'Material',machine:'Machine',total:'Total',switchLanguage:'Switch to German'},
+    de:{title:'3D-Druck-Simulator',process:'Verfahren',sla:'SLA / Harz',sls:'SLS / Pulverbett',printingProcess:'Druckverfahren',share:'QR-Code fürs Handy',reset:'Zurücksetzen',parameters:'Simulationsparameter',layerHeight:'Schichthöhe',fine:'fein',fast:'schnell',modelSize:'Modellgröße',density:'Füllung / Dichte',light:'leicht',solid:'massiv',quantity:'Stückzahl',keychain:'Schlüsselanhänger',layers:'Schichten',keychainAria:'Schlüsselanhänger mit sichtbaren Schichten',bracket:'Halterung',bracketAria:'Mechanische Halterung mit sichtbaren Schichten',housing:'Gittergehäuse',housingAria:'Gittergehäuse mit sichtbaren Schichten',costStructure:'Kostenstruktur',referenceValues:'didaktische Referenzwerte',fffPrinter:'ca. 1.400 €',materialMachine:'Material · Maschinenstunde',fffRates:'24 €/kg · 0,95 €/h',slaPrinter:'ca. 4.500 €',slaRates:'110 €/l · 3,35 €/h',slsPrinter:'ca. 35.000 €',slsRates:'70 €/kg · 13,50 €/h',note:'Vereinfachte Lernsimulation – reale Zeiten und Kosten hängen von Maschine, Material, Orientierung, Support und Slicerprofil ab.',openOnPhone:'Auf dem Handy öffnen',close:'Fenster schließen',qrAlt:'QR-Code zum 3D-Druck-Simulator',qrHelp:'QR-Code scannen und direkt mitspielen. Es genügt eine mobile Datenverbindung – kein gemeinsames WLAN nötig.',printTime:'Druckzeit',material:'Material',machine:'Maschine',total:'Gesamt',switchLanguage:'Zu Englisch wechseln'}
+  };
+  const state={process:'fff',language:'en'};
   const $=id=>document.getElementById(id);
   const controls={layer:$('layer'),size:$('size'),density:$('density'),quantity:$('quantity')};
 
@@ -155,7 +160,7 @@
     const minutes=Math.max(1,Math.round(hours*60));
     return minutes<60?`${minutes} min`:`${Math.floor(minutes/60)} h ${String(minutes%60).padStart(2,'0')} min`;
   }
-  function formatEuro(value){return value.toLocaleString('de-DE',{style:'currency',currency:'EUR',minimumFractionDigits:2})}
+  function formatEuro(value){return value.toLocaleString(state.language==='en'?'en-GB':'de-DE',{style:'currency',currency:'EUR',minimumFractionDigits:2})}
   function calculate(model,process,params){
     const scale=params.size/100,volume=model.volume*scale**3,layers=Math.ceil(model.height*scale/params.layer),q=params.quantity,d=params.density/100;
     let materialAmount,hours;
@@ -177,17 +182,27 @@
     return{layers,hours,materialAmount,materialCost,machineCost,total:materialCost+machineCost};
   }
   function metrics(result,process){
-    const amount=process==='sla'?`${Math.round(result.materialAmount)} ml`:`${Math.round(result.materialAmount)} g`;
-    return `<div class="metric"><span>Druckzeit</span><strong>${formatTime(result.hours)}</strong></div><div class="metric"><span>Material · ${amount}</span><strong>${formatEuro(result.materialCost)}</strong></div><div class="metric"><span>Maschine</span><strong>${formatEuro(result.machineCost)}</strong></div><div class="metric"><span>Gesamt</span><strong>${formatEuro(result.total)}</strong></div>`;
+    const t=translations[state.language],amount=process==='sla'?`${Math.round(result.materialAmount)} ml`:`${Math.round(result.materialAmount)} g`;
+    return `<div class="metric"><span>${t.printTime}</span><strong>${formatTime(result.hours)}</strong></div><div class="metric"><span>${t.material} · ${amount}</span><strong>${formatEuro(result.materialCost)}</strong></div><div class="metric"><span>${t.machine}</span><strong>${formatEuro(result.machineCost)}</strong></div><div class="metric"><span>${t.total}</span><strong>${formatEuro(result.total)}</strong></div>`;
+  }
+  function setLanguage(language){
+    state.language=language;const t=translations[language];
+    document.documentElement.lang=language;document.title=t.title;
+    document.querySelectorAll('[data-i18n]').forEach(element=>element.textContent=t[element.dataset.i18n]);
+    document.querySelectorAll('[data-i18n-aria]').forEach(element=>element.setAttribute('aria-label',t[element.dataset.i18nAria]));
+    document.querySelectorAll('[data-i18n-alt]').forEach(element=>element.alt=t[element.dataset.i18nAlt]);
+    $('language').textContent=language==='en'?'DE':'EN';$('language').setAttribute('aria-label',t.switchLanguage);
+    render();
   }
   function render(){
     const p=processes[state.process],params={layer:+controls.layer.value,size:+controls.size.value,density:+controls.density.value,quantity:+controls.quantity.value};
     document.documentElement.style.setProperty('--active',p.color);
-    $('layerValue').value=`${params.layer.toLocaleString('de-DE',{minimumFractionDigits:state.process==='fff'?2:3,maximumFractionDigits:3})} mm`;
+    const locale=state.language==='en'?'en-GB':'de-DE';
+    $('layerValue').value=`${params.layer.toLocaleString(locale,{minimumFractionDigits:state.process==='fff'?2:3,maximumFractionDigits:3})} mm`;
     $('sizeValue').value=`${params.size} %`;$('densityValue').value=`${params.density} %`;$('quantityValue').value=params.quantity;
     document.querySelectorAll('.example').forEach(card=>{
       const result=calculate(models[card.dataset.model],state.process,params);
-      card.querySelector('[data-out="layers"]').textContent=result.layers.toLocaleString('de-DE');
+      card.querySelector('[data-out="layers"]').textContent=result.layers.toLocaleString(locale);
       card.querySelector('.metrics').innerHTML=metrics(result,state.process);
       const stripe=Math.max(3,Math.min(13,params.layer/p.layer.max*13));
       card.querySelectorAll('[data-layer-pattern]').forEach(pattern=>pattern.setAttribute('height',stripe.toFixed(1)));
@@ -207,12 +222,15 @@
   Object.values(controls).forEach(control=>control.addEventListener('input',render));
   $('reset').addEventListener('click',()=>{controls.size.value=100;controls.density.value=30;controls.quantity.value=1;chooseProcess('fff')});
   $('share').addEventListener('click',()=>$('shareDialog').showModal());
+  $('language').addEventListener('click',()=>setLanguage(state.language==='en'?'de':'en'));
   $('closeShare').addEventListener('click',()=>$('shareDialog').close());
   $('shareDialog').addEventListener('click',event=>{if(event.target===$('shareDialog'))$('shareDialog').close()});
 
-  console.assert(calculate(models.bracket,'fff',{layer:.1,size:100,density:30,quantity:1}).hours>calculate(models.bracket,'fff',{layer:.2,size:100,density:30,quantity:1}).hours,'Kleinere Schichten müssen länger dauern');
-  console.assert(calculate(models.tag,'fff',{layer:.2,size:100,density:30,quantity:5}).total>calculate(models.tag,'fff',{layer:.2,size:100,density:30,quantity:1}).total,'Mehr Teile müssen mehr kosten');
+  console.assert(calculate(models.bracket,'fff',{layer:.1,size:100,density:30,quantity:1}).hours>calculate(models.bracket,'fff',{layer:.2,size:100,density:30,quantity:1}).hours,'Smaller layers must take longer');
+  console.assert(calculate(models.tag,'fff',{layer:.2,size:100,density:30,quantity:5}).total>calculate(models.tag,'fff',{layer:.2,size:100,density:30,quantity:1}).total,'More parts must cost more');
+  console.assert([...document.querySelectorAll('[data-i18n]')].every(element=>translations.en[element.dataset.i18n]&&translations.de[element.dataset.i18n]),'Every translation key must exist in both languages');
   chooseProcess('fff');
+  setLanguage('en');
 </script>
 </body>
 </html>
